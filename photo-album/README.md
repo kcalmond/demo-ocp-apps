@@ -1,4 +1,4 @@
-# OpenShift Container Storage Demos
+# Object Storage (OBC) Demo Application
 
 ## Introduction
 
