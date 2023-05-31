@@ -24,7 +24,7 @@ spec:
     spec: 
       initContainers:
       - name: init
-        image: quay.io/vcppds7878/filebrowser:latest
+        image: quay.io/vcppds7878/filebrowser@sha256:156d2bd852b01aad73d83a2c05a6e59b60781dbdbb7af99f251dfccdef5cec98
         imagePullPolicy: Always
         command: ['sh', '-c', 'mkdir -p -m 777 /srv/filebrowser/config && mkdir -p -m 777 /srv/filebrowser/data']
         volumeMounts:                     
@@ -32,7 +32,7 @@ spec:
             mountPath: /srv
       containers:
       - name: filebrowser
-        image: quay.io/vcppds7878/filebrowser:latest
+        image: quay.io/vcppds7878/filebrowser@sha256:156d2bd852b01aad73d83a2c05a6e59b60781dbdbb7af99f251dfccdef5cec98
         imagePullPolicy: Always
         volumeMounts:                     
           - name: filebrowser-vol

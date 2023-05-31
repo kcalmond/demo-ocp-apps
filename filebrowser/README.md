@@ -31,3 +31,5 @@ To deploy the application and use it perform the following:
 
 You can upload files or entire folder using the UI as well as you can manually create fiels or directories.
 
+:exclamation: __The default user and password for UI access is `admin/admin`.__
+

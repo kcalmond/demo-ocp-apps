@@ -5,4 +5,4 @@ a build phase.
 
 * `File Browser` - Leverage RWX capable storage backend
 * `Photo Album ` - Leverage Object Bucket Claim and read write using S3 protocol
-* {not decided} - Leverage RWO block capable storage backend
+* `Minecraft   ` - Leverage RWO block capable storage backend

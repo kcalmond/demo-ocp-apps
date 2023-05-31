@@ -1,0 +1,90 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: minecraft
+spec: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minecraft-server-data
+  namespace: minecraft
+spec:
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps.openshift.io/v1
+kind: Deployment
+metadata:
+  name: minecraft-server
+  namespace: minecraft
+  labels:
+    app: minecraft-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft-server
+  template:
+    metadata:
+      labels:
+        app: minecraft-server
+    spec:
+      volumes:
+        - name: "minecraft-server-data"
+          persistentVolumeClaim:
+            claimName: "minecraft-server-data"
+      containers:
+        - name: minecraft-server
+          image: quay.io/vcppds7878/minecraft-server@sha256:528e1ba23246b976b78842f3ac3382c92f78b9c741537f2e333a4f2db6718ddc
+          ports:
+            - containerPort: 25565
+              protocol: TCP
+          env:
+            - name: "EULA"
+              value: "TRUE"
+          volumeMounts:
+            - mountPath: /data
+              name: minecraft-server-data
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: minecraft-server
+  namespace: minecraft
+spec:
+  host: ''
+  to:
+    kind: Service
+    name: minecraft-server
+    weight: 100
+  port:
+    targetPort: 25565
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: minecraft-server
+  namespace: minecraft
+  labels:
+    app: minecraft-server
+spec:
+  ports:
+    - protocol: TCP
+      port: 25565
+      targetPort: 25565
+      nodePort: 30630
+  selector:
+    app: minecraft-server
+  type: NodePort
+  sessionAffinity: None
+  externalTrafficPolicy: Cluster
