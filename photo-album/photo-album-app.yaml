@@ -1,0 +1,104 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: photo-album
+spec: {}
+---
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: "photo-album"
+  namespace: photo-album
+spec:
+  generateBucketName: "photo-album"
+  storageClassName: openshift-storage.noobaa.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: photo-album
+  name: photo-album
+  namespace: photo-album
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: photo-album
+  template:
+    metadata:
+      labels:
+        app: photo-album
+    spec:
+      containers:
+      - image: quay.io/vcppds7878/photo-album@sha256:cef14d02728ed139938b07c5cecb55d1003eaa4cebcee15dc10f96c3e7f1a031
+        name: photo-album
+        env:
+          - name: ENDPOINT_URL
+            value: 'https://s3.openshift-storage.svc'
+#
+# If using a regular app you would grab the S3 endpoint using the values below and build the
+# https://${ENDPOINT_URL} inside your container
+#
+#            valueFrom:
+#              configMapKeyRef:
+#                name: photo-album
+#                key: BUCKET_HOST
+          - name: BUCKET_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: photo-album
+                key: BUCKET_NAME
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: photo-album
+                key: AWS_ACCESS_KEY_ID
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: photo-album
+                key: AWS_SECRET_ACCESS_KEY          
+        ports:
+        - containerPort: 8081
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: photo-album
+  name: photo-album
+  namespace: photo-album
+spec:
+  type: LoadBalancer
+  ports:
+  - name: 80-tcp
+    port: 80
+    protocol: TCP
+    targetPort: 8081
+  selector:
+    app: photo-album
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  labels:
+    app: photo-album
+  name: photo-album
+  namespace: photo-album
+spec:
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None
+  port:
+    targetPort: 80-tcp
+  host: ''
+  to:
+    kind: Service
+    name: photo-album
+    weight: 100
