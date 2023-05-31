@@ -1,0 +1,99 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: filebrowser-rwo
+spec: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filebrowser-deployment
+  namespace: filebrowser-rwo
+  labels:
+    app: filebrowser
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: filebrowser
+  template:
+    metadata:
+      labels:
+        app: filebrowser
+    spec: 
+      initContainers:
+      - name: init
+        image: quay.io/vcppds7878/filebrowser:latest
+        imagePullPolicy: Always
+        command: ['sh', '-c', 'mkdir -p -m 777 /srv/filebrowser/config && mkdir -p -m 777 /srv/filebrowser/data']
+        volumeMounts:                     
+          - name: filebrowser-vol
+            mountPath: /srv
+      containers:
+      - name: filebrowser
+        image: quay.io/vcppds7878/filebrowser:latest
+        imagePullPolicy: Always
+        volumeMounts:                     
+          - name: filebrowser-vol
+            mountPath: /srv
+      volumes:
+        - name: filebrowser-vol
+          persistentVolumeClaim:
+            claimName: filebrowser-pvc                
+      resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: filebrowser-pvc
+  namespace: filebrowser-rwo
+  labels:
+    appname: filebrowser
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  storageClassName: "ocs-storagecluster-ceph-rbd"
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: filebrowser-svc
+  namespace: filebrowser-rwo
+  labels:
+    app: filebrowser
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: filebrowser
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: filebrowser-route
+  namespace: filebrowser-rwo
+  labels:
+    app: filebrowser    
+spec:
+  host: ''
+  to:
+    kind: Service
+    name: filebrowser-svc
+    weight: 100
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None

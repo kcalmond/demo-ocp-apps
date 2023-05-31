@@ -15,7 +15,7 @@ The application uses:
 
 To build your own container image:
 
-* `cd {the directory where you cloned the repo}`
+* `cd {the directory where you cloned the repo}/photo-album`
 * `docker|podman build -t {your_image_name}:{your_tag} .`
 * `docker|podman push -t {your_image_name}:{your_tag}`
 
