@@ -15,11 +15,11 @@ The application uses:
 
 To build your own container image:
 
-# `cd {the directory where you cloned the repo}`
-# `docker|podman build -t {your_image_name}:{your_tag} .`
-# `docker|podman push -t {your_image_name}:{your_tag}`
+* `cd {the directory where you cloned the repo}`
+* `docker|podman build -t {your_image_name}:{your_tag} .`
+* `docker|podman push -t {your_image_name}:{your_tag}`
 
-:exclamation: ** Make sure your registry repo is accessible (public) if the OpenShift cluster does not have a specific pull-secret.**
+:exclamation: __Make sure your registry repo is accessible (public) if the OpenShift cluster does not have a specific pull-secret.__
 
 ## Deploying your application
 
@@ -34,5 +34,5 @@ To deploy the application and use it perform the following:
 To upload a photo, click on `Select Photo`; this will open a local file selection dialog for you to
 select the desired file; then click `Upload`.
 
-:exclamation: ** Non graphic files will be uploaded but will not be rendered with a preview in the web browser. **
+:exclamation: __Non graphic files will be uploaded but will not be rendered with a preview in the web browser.__
 
