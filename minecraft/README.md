@@ -22,6 +22,5 @@ To deploy the application and use it perform the following:
 
 * `oc create -f ./minecraft-app.yaml`
 * `oc get route -n minecraft`
-* Point your web browser to the route
+* Use a Minecraft client application connect to this server
 
-![File Browser Web Page](minecraft-server-ui.png)
