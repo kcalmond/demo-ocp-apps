@@ -1,0 +1,15 @@
+---
+apiVersion: data-protection.isf.ibm.com/v1alpha1
+kind: BackupPolicy
+metadata:
+  name: cli-external
+  namespace: ibm-spectrum-fusion-ns
+spec:
+  backupStorageLocation: bsl-myaws-endpoint
+  provider: isf-backup-restore
+  retention:
+    number: 5
+    unit: weeks
+  schedule:
+    cron: 00 6  * * 0
+    timezone: America/Los_Angeles

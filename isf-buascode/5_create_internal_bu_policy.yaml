@@ -1,0 +1,15 @@
+---
+apiVersion: data-protection.isf.ibm.com/v1alpha1
+kind: BackupPolicy
+metadata:
+  name: cli-internal
+  namespace: ibm-spectrum-fusion-ns
+spec:
+  backupStorageLocation: isf-dp-inplace-snapshot
+  provider: isf-backup-restore
+  retention:
+    number: 7
+    unit: days
+  schedule:
+    cron: '00 6  * * * '
+    timezone: America/Los_Angeles

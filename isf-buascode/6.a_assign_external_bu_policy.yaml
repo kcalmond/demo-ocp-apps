@@ -1,0 +1,10 @@
+---
+apiVersion: data-protection.isf.ibm.com/v1alpha1
+kind: PolicyAssignment
+metadata:
+  name: file-uploader-rwx-cli-external
+  namespace: ibm-spectrum-fusion-ns
+spec:
+  application: file-uploader-rwx
+  backupPolicy: cli-external
+  runNow: true

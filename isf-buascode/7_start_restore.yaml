@@ -1,0 +1,8 @@
+---
+apiVersion: data-protection.isf.ibm.com/v1alpha1
+kind: Restore
+metadata:
+  name: file-uploader-rwx-restore-external
+  namespace: ibm-spectrum-fusion-ns
+spec:
+  backup: $(oc get backup.data-protection.isf.ibm.com -n ibm-spectrum-fusion-ns | grep "cli-external" | awk '{ print $1 }')
