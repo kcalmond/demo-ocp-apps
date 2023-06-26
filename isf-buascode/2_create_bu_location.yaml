@@ -1,0 +1,14 @@
+---
+apiVersion: data-protection.isf.ibm.com/v1alpha1
+kind: BackupStorageLocation
+metadata:
+  name: bsl-myaws-endpoint
+  namespace: ibm-spectrum-fusion-ns
+spec:
+  type: aws
+  credentialName:  bsl-myaws-secret
+  provider: isf-backup-restore
+  params:
+    region: {region_name}
+    bucket: {bucket_name}
+    endpoint: https://{endpoint_fqdn}
