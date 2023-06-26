@@ -32,6 +32,7 @@ For this example we will use an external Amazon S3 bucket as an endpoint for wha
 * Some optional parameters depending on the type of S3 endpoint (e.g. the Region name for AWS)
 
 ### Step 1 - Store your S3 credentials
+[1_store_S3_cred.yaml]()
 
     cat <<EOF | oc create -f -
     ---
@@ -47,6 +48,7 @@ For this example we will use an external Amazon S3 bucket as an endpoint for wha
     EOF 
 
 ### Step 2 - Create the Backup Storage Location
+[2_create_bu_location.yaml]()
 
     cat <<EOF | oc create -f -
     ---
@@ -82,6 +84,7 @@ For this example we will use an external Amazon S3 bucket as an endpoint for wha
     done 
 
 ### Step 4 - Create External Backup Policy (using external S3 endpoint)
+[4_create_external_S3_policy.yaml]()
 
     cat <<EOF | oc create -f -
     ---
@@ -104,6 +107,7 @@ For this example we will use an external Amazon S3 bucket as an endpoint for wha
 You can alter the scheduling example using CRON standards. The above will schedule a backup every Sunday. Such a backup policy can be used to restore the application to a different namespace or different cluster as the backup is being kept outside of the original Red Hat OpenShift namespace.
 
 ### Step 5 - Create internal backup policy (using namespace scoped snapshots)
+[5_create_internal_bu_policy.yaml]()
 
     cat <<EOF | oc create -f -
     ---
@@ -129,6 +133,7 @@ Application configuration
 The only thing that must be perform is to assign the correct backup policy to the application namespace.
 
 ### Step 6.a - Assign the external backup policy
+[6.a.assign_external_bu_policy]()
 
     cat <<EOF | oc create -f -
     apiVersion: data-protection.isf.ibm.com/v1alpha1
@@ -145,6 +150,7 @@ The only thing that must be perform is to assign the correct backup policy to th
 N.B.: The runNow: true parameter will cause a backup to start immediately upon the assignment of the backup policy to the application namespace.
 
 ### Step 6.b  - Assign the internal backup policy
+[6.b.assign_internal_bu_policy]()
 
     cat <<EOF | oc create -f -
     apiVersion: data-protection.isf.ibm.com/v1alpha1
@@ -173,6 +179,7 @@ To test the restore of an application then becomes an easy set of task.
     $ oc delete project file-uploader-rwx 
 
 ### Step 7 - Initiate the restore
+[7_start_restore.yaml]()
 
     cat <<EOF | oc create -f -
     ---
@@ -186,6 +193,7 @@ To test the restore of an application then becomes an easy set of task.
     EOF 
 
 ### - Check the restore status
+
 
     $ oc get restore.data-protection.isf.ibm.com -n ibm-spectrum-fusion-ns -o 'custom-columns=NAME:.metadata.name,BACKUP:.spec.backup,STATUS:.status.phase'
     NAME                                 BACKUP                                        STATUS
